@@ -73,6 +73,54 @@ THE SOFTWARE.
         </td>
         <f:helpLink url="${attrs.help}" featureName="${title}"/>
       </tr>
+        <style>
+.custom-hep-button{
+    float: right;
+    position: relative;
+    left: -46px;
+    top: -4px;
+}
+.custom-hep-button-edit, .custom-hep-button-save{
+position: absolute;
+    float: right;
+    background: #447788;
+    padding: 6px 11px 6px 11px;
+    text-align: center;
+    color: #fff;
+    cursor: pointer;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    display:none;
+}
+.custom-hep-text textarea{
+      width: 100%;
+    border: none;
+    min-height: 200px;
+}
+.custom-hep-text {
+    min-height: 23px;
+}
+.custom-hep-text textarea:focus{
+     outline: none;
+}
+</style>
+<tr class="help-area">
+  <td>
+  </td>
+  <td colspan="2">
+    <div class="help">
+      <div class="custom-hep-button">
+        <div class="custom-hep-button-save" >Save</div>
+        <div class="custom-hep-button-edit" >Edit</div>
+      </div>
+      <div class="custom-hep-text">${%Loading...}</div>
+    </div>
+  </td><td>
+  </td>
+</tr>
       <j:if test="${attrs.help!=null}">
         <f:helpArea />
       </j:if>

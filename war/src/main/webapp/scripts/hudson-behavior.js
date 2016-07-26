@@ -725,11 +725,18 @@ var jenkinsRules = {
 
     "A.help-button" : function(e) {
         e.onclick = function() {
-            var tr = findFollowingTR(this, "help-area");
-            var div = $(tr).down().next().down();
+            var tr2 = findFollowingTR(this, "help-area");
+            var div2 = $(tr2).down().next().down().down().next();
 
+            $(tr2).down().next().down().down().down().next().style.display = "block";
+
+            var div3 = $(tr2).down().next().down();
+            var tr = findFollowingTR(tr2, "help-area");
+            var div = $(tr).down().next().down();
+            //alert(tr2);
             if (div.style.display != "block") {
                 div.style.display = "block";
+                div3.style.display = "block";
                 // make it visible
                 new Ajax.Request(this.getAttribute("helpURL"), {
                     method : 'get',
@@ -743,11 +750,50 @@ var jenkinsRules = {
                         layoutUpdateCallback.call();
                     }
                 });
+                new Ajax.Request(this.getAttribute("helpURL"), {
+                    method : 'get',
+                    onSuccess : function(x) {
+                        var from = x.getResponseHeader("X-Plugin-From");
+                        div2.innerHTML = "123";
+                        layoutUpdateCallback.call();
+                    },
+                    onFailure : function(x) {
+                        div2.innerHTML = "<b>ERROR</b>: Failed to load help file: " + x.statusText;
+                        layoutUpdateCallback.call();
+                    }
+                });
             } else {
+                $(tr2).down().next().down().down().down().next().style.display = "none";
+                $(tr2).down().next().down().down().down().style.display = "none";
+                div2.innerHTML = "";
                 div.style.display = "none";
+                div3.style.display = "none";
                 layoutUpdateCallback.call();
             }
 
+            return false;
+        };
+        e.tabIndex = 9999; // make help link unnavigable from keyboard
+        e = null; // avoid memory leak
+    },
+    ".custom-hep-button-edit" : function(e) {
+        e.onclick = function() {
+            $(this).style.display = "none";
+            $(this).previous().style.display = "block";
+            var div = $(this).up().next();
+            div.innerHTML = "<textarea>"+div.innerHTML+"</textarea>";
+            div.down().focus();
+            return false;
+        };
+        e.tabIndex = 9999; // make help link unnavigable from keyboard
+        e = null; // avoid memory leak
+    },
+    ".custom-hep-button-save" : function(e) {
+        e.onclick = function() {
+            $(this).style.display = "none";
+            $(this).next().style.display = "block";
+            var div = $(this).up().next();
+            div.innerHTML = div.down().value;
             return false;
         };
         e.tabIndex = 9999; // make help link unnavigable from keyboard
