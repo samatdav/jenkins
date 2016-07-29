@@ -553,7 +553,7 @@ THE SOFTWARE.
         						</goals>
         					</pluginExecutionFilter>
         					<action>
-        						<ignore/>
+        						<ignore />
         					</action>
         				</pluginExecution>
         				<pluginExecution>
@@ -567,7 +567,7 @@ THE SOFTWARE.
         						</goals>
         					</pluginExecutionFilter>
         					<action>
-        						<ignore/>
+        						<ignore />
         					</action>
         				</pluginExecution>
         			</pluginExecutions>
