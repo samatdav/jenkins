@@ -1,5 +1,8 @@
-package hello_world.my_hello_world;
+package hudson.my_hello_world;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.File;
 import hudson.Extension;
 import hudson.model.Action;
 import hudson.model.RootAction;
@@ -58,5 +61,30 @@ public class MyHelloRootAct extends Recorder.ActionChoices implements RootAction
         else {
             return null;
         }
+    }
+
+    public String getUpdateMyString() throws IOException {
+
+        //process get request
+        String class_name = Stapler.getCurrentRequest().getParameter("class");
+        String updated_class_name = Stapler.getCurrentRequest().getParameter("textArea");
+
+        URL file = Klass.java(clazz).getResource(class_name + ".html");
+        String file_path = Klass.java(clazz).getResource("").getFile();
+        //check if the file exists
+        if (file == null) {
+            File newFile = new File(file_path + "/" + class_name + ".html");
+            newFile.createNewFile();
+        }
+        String file_path2 = Klass.java(clazz).getResource(class_name + ".html").getFile();
+        File f1 = new File(file_path2);
+        FileWriter fw = new FileWriter(f1);
+        BufferedWriter out = new BufferedWriter(fw);
+        out.write(updated_class_name);
+        out.flush();
+        out.close();
+
+         return null;
+        //return (class_name+updated_class_name);
     }
 }

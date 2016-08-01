@@ -95,6 +95,12 @@ position: absolute;
     font-weight: bold;
     display:none;
 }
+
+
+.custom-help{
+    border-left: 5px solid rgba(0, 0, 0, 0.1);
+    background: none;
+}
 .custom-hep-text textarea{
       width: 100%;
     border: none;
@@ -107,20 +113,7 @@ position: absolute;
      outline: none;
 }
 </style>
-<tr class="help-area">
-  <td>
-  </td>
-  <td colspan="2">
-    <div class="help">
-      <div class="custom-hep-button">
-        <div class="custom-hep-button-save" >Save</div>
-        <div class="custom-hep-button-edit" >Edit</div>
-      </div>
-      <div class="custom-hep-text">${%Loading...}</div>
-    </div>
-  </td><td>
-  </td>
-</tr>
+
       <j:if test="${attrs.help!=null}">
         <f:helpArea />
       </j:if>
