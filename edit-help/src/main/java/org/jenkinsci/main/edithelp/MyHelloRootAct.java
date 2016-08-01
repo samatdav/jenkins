@@ -1,4 +1,4 @@
-package my_hello_world;
+package org.jenkinsci.main.edithelp;
 
 import java.io.*;
 
