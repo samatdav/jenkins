@@ -1,4 +1,4 @@
-package hudson.my_hello_world;
+package my_hello_world;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
