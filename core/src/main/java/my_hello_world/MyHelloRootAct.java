@@ -1,8 +1,7 @@
 package my_hello_world;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.File;
+import java.io.*;
+
 import hudson.Extension;
 import hudson.model.Action;
 import hudson.model.RootAction;
@@ -15,8 +14,6 @@ import org.kohsuke.stapler.lang.Klass;
 import sun.misc.URLClassPath;
 
 import javax.swing.*;
-import java.io.BufferedInputStream;
-import java.io.IOException;
 import java.net.Socket;
 import java.net.URL;
 
@@ -43,20 +40,30 @@ public class MyHelloRootAct extends Recorder.ActionChoices implements RootAction
 
         //process get request
         String class_name = Stapler.getCurrentRequest().getParameter("class");
-
-        URL file = Klass.java(clazz).getResource(class_name + ".html");
+        
+        String dirName = Jenkins.getInstance().getRootDir().toString()+"/helpmanager";
+        File f2 = new File(dirName);
+        if(!f2.exists())
+            f2.mkdirs();
+        StringBuilder sb = new StringBuilder();
+        File f1 = new File(dirName+"/"+class_name+".html");
+        //URL file = Klass.java(clazz).getResource(class_name + ".html");
         //check if the file exists
-        if (file != null) {
-            //read the file
-            BufferedInputStream in = (BufferedInputStream) file.getContent();
-            byte[] contents = new byte[1024];
-            int bytesRead = 0;
-            String strFileContents = "";
-            while((bytesRead = in.read(contents)) != -1) {
-                strFileContents += new String(contents, 0, bytesRead);
+        if (f1.exists()) {
+            BufferedReader in = new BufferedReader(new FileReader(dirName+"/"+class_name+".html"));
+            try {
+                //В цикле построчно считываем файл
+                String s;
+                while ((s = in.readLine()) != null) {
+                    sb.append(s);
+                    sb.append("\n");
+                }
+            } finally {
+                //Также не забываем закрыть файл
+                in.close();
             }
-            //return needed string
-            return strFileContents;
+
+            return sb.toString();
         }
         else {
             return null;
@@ -69,22 +76,28 @@ public class MyHelloRootAct extends Recorder.ActionChoices implements RootAction
         String class_name = Stapler.getCurrentRequest().getParameter("class");
         String updated_class_name = Stapler.getCurrentRequest().getParameter("textArea");
 
-        URL file = Klass.java(clazz).getResource(class_name + ".html");
-        String file_path = Klass.java(clazz).getResource("").getFile();
-        //check if the file exists
-        if (file == null) {
-            File newFile = new File(file_path + "/" + class_name + ".html");
-            newFile.createNewFile();
-        }
-        String file_path2 = Klass.java(clazz).getResource(class_name + ".html").getFile();
-        File f1 = new File(file_path2);
-        FileWriter fw = new FileWriter(f1);
-        BufferedWriter out = new BufferedWriter(fw);
-        out.write(updated_class_name);
-        out.flush();
-        out.close();
+        if (class_name != null) {
 
-         return null;
+            String dirName = Jenkins.getInstance().getRootDir().toString()+"/helpmanager";
+            File f2 = new File(dirName);
+            if(!f2.exists())
+                f2.mkdirs();
+
+            File newFile = new File(dirName + "/" + class_name + ".html");
+            //check if the file exists
+            if (!newFile.exists()) {
+                newFile.createNewFile();
+            }
+            FileWriter fw = new FileWriter(newFile);
+            BufferedWriter out = new BufferedWriter(fw);
+            out.write(updated_class_name);
+            out.flush();
+            out.close();
+
+        }
+
+
+        return Jenkins.getInstance().getRootDir().toString()+"/helpmanager";
         //return (class_name+updated_class_name);
     }
 }
