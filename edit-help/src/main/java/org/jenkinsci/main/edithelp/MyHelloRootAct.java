@@ -47,19 +47,16 @@ public class MyHelloRootAct extends Recorder.ActionChoices implements RootAction
             f2.mkdirs();
         StringBuilder sb = new StringBuilder();
         File f1 = new File(dirName+"/"+class_name+".html");
-        //URL file = Klass.java(clazz).getResource(class_name + ".html");
         //check if the file exists
         if (f1.exists()) {
             BufferedReader in = new BufferedReader(new FileReader(dirName+"/"+class_name+".html"));
             try {
-                //В цикле построчно считываем файл
                 String s;
                 while ((s = in.readLine()) != null) {
                     sb.append(s);
                     sb.append("\n");
                 }
             } finally {
-                //Также не забываем закрыть файл
                 in.close();
             }
 
@@ -96,8 +93,6 @@ public class MyHelloRootAct extends Recorder.ActionChoices implements RootAction
 
         }
 
-
         return Jenkins.getInstance().getRootDir().toString()+"/helpmanager";
-        //return (class_name+updated_class_name);
     }
 }
