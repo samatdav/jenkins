@@ -18,7 +18,7 @@ import java.net.Socket;
 import java.net.URL;
 
 @Extension
-public class MyHelloRootAct extends Recorder.ActionChoices implements RootAction {
+public class MyHelloRootAct implements RootAction {
     public transient final Class<?> clazz = (Class)getClass();
 
     @Override
