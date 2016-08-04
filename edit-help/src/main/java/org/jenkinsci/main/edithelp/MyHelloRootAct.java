@@ -16,11 +16,52 @@ import sun.misc.URLClassPath;
 import javax.swing.*;
 import java.net.Socket;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeMap;
 
 @Extension
 public class MyHelloRootAct implements RootAction {
     public transient final Class<?> clazz = (Class)getClass();
+    Map<String, String> map = new TreeMap<String, String>();
+    private static ArrayList<File> listWithFileNames = new ArrayList<>();
+    public MyHelloRootAct() throws IOException {
+        String dirName = Jenkins.getInstance().getRootDir().toString()+"/helpmanager";
+        File f2 = new File(dirName);
+        if(!f2.exists())
+            f2.mkdirs();
+        getListFiles(dirName);
 
+        for (File fil : listWithFileNames) {
+            StringBuilder sb = new StringBuilder();
+            BufferedReader in = new BufferedReader(new FileReader(dirName+"/"+fil.getName()));
+            try {
+                String s;
+                while ((s = in.readLine()) != null) {
+                    sb.append(s);
+                    sb.append("\n");
+                }
+            } finally {
+                in.close();
+            }
+
+            map.put(fil.getName(),sb.toString());
+        }
+
+    }
+
+
+    public static void getListFiles(String str) {
+        File f = new File(str);
+        for (File s : f.listFiles()) {
+            if (s.isFile()) {
+                listWithFileNames.add(s);
+            } else if (s.isDirectory()) {
+                getListFiles(s.getAbsolutePath());
+            }
+        }
+
+    }
     @Override
     public String getIconFileName() {
         return null;
@@ -40,29 +81,11 @@ public class MyHelloRootAct implements RootAction {
 
         //process get request
         String class_name = Stapler.getCurrentRequest().getParameter("class");
-        
-        String dirName = Jenkins.getInstance().getRootDir().toString()+"/helpmanager";
-        File f2 = new File(dirName);
-        if(!f2.exists())
-            f2.mkdirs();
-        StringBuilder sb = new StringBuilder();
-        File f1 = new File(dirName+"/"+class_name+".html");
-        //check if the file exists
-        if (f1.exists()) {
-            BufferedReader in = new BufferedReader(new FileReader(dirName+"/"+class_name+".html"));
-            try {
-                String s;
-                while ((s = in.readLine()) != null) {
-                    sb.append(s);
-                    sb.append("\n");
-                }
-            } finally {
-                in.close();
-            }
 
-            return sb.toString();
-        }
-        else {
+        ;
+        if(map.containsKey(class_name+".html")){
+            return map.get(class_name+".html");
+        }else{
             return null;
         }
     }
@@ -72,7 +95,7 @@ public class MyHelloRootAct implements RootAction {
         //process get request
         String class_name = Stapler.getCurrentRequest().getParameter("class");
         String updated_class_name = Stapler.getCurrentRequest().getParameter("textArea");
-
+        map.put(class_name+".html",updated_class_name);
         if (class_name != null) {
 
             String dirName = Jenkins.getInstance().getRootDir().toString()+"/helpmanager";
@@ -93,6 +116,8 @@ public class MyHelloRootAct implements RootAction {
 
         }
 
-        return Jenkins.getInstance().getRootDir().toString()+"/helpmanager";
+
+        return null;
+        //return (class_name+updated_class_name);
     }
 }
