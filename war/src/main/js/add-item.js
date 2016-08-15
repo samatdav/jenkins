@@ -101,20 +101,27 @@ $.when(getItems()).done(function(data) {
       });
     }
 
-    function enableSubmit(status) {
+    function enableButton(status) {
       var btn = $('form .footer .btn-decorator button[type=submit]');
+
+      btn.prop('disabled', !status);
       if (status === true) {
-        if (btn.hasClass('disabled')) {
-          btn.removeClass('disabled');
-          btn.prop('disabled', false);
-        }
-        btn.focus();
+        btn.removeClass('disabled');
       } else {
-        if (!btn.hasClass('disabled')) {
-          btn.addClass('disabled');
-          btn.prop('disabled', true);
-        }
+        btn.addClass('disabled');
       }
+    }
+
+    function focusButton(status) {
+      if (status === true) {
+        var btn = $('form .footer .btn-decorator button[type=submit]');
+        btn.focus();
+      }
+    }
+
+    function enableSubmit(status) {
+      enableButton(status);
+      focusButton(status);
     }
 
     function getFormValidationStatus() {
@@ -177,7 +184,6 @@ $.when(getItems()).done(function(data) {
 
         setFieldValidationStatus('items', true);
         if (!getFieldValidationStatus('name')) {
-          activateValidationMessage('#itemname-required', '.add-item-name');
           $('input[name="name"][type="text"]', '#createItem').focus();
         } else {
           if (getFormValidationStatus()) {
@@ -235,19 +241,28 @@ $.when(getItems()).done(function(data) {
     $("#add-item-panel").find("#name").focus();
 
     // Init NameField
-    $('input[name="name"]', '#createItem').blur(function() {
+    $('input[name="name"]', '#createItem').on('keyup blur', function(event) {
       if (!isItemNameEmpty()) {
         var itemName = $('input[name="name"]', '#createItem').val();
         $.get("checkJobName", { value: itemName }).done(function(data) {
           var message = parseResponseFromCheckJobName(data);
           if (message !== '') {
             activateValidationMessage('#itemname-invalid', '.add-item-name', message);
+            $('input[name="name"]').css({'border': "1px solid red", "background-color": "#FADEDE"});
           } else {
             cleanValidationMessages('.add-item-name');
+            $('input[name="name"]').css({'border': "1px solid #999", "background-color": "#fff"});
             showInputHelp('.add-item-name');
             setFieldValidationStatus('name', true);
             if (getFormValidationStatus()) {
-              enableSubmit(true);
+              switch (event.type) {
+                case 'blur':
+                  enableSubmit(true);
+                  break;
+                case 'keyup':
+                  enableButton(true);
+                  break;
+              } 
             }
           }
         });
@@ -255,7 +270,7 @@ $.when(getItems()).done(function(data) {
         enableSubmit(false);
         setFieldValidationStatus('name', false);
         cleanValidationMessages('.add-item-name');
-        activateValidationMessage('#itemname-required', '.add-item-name');
+        showInputHelp('.add-item-name');
       }
     });
 
